@@ -5,6 +5,8 @@ import Fluent
 
 @Suite("App Tests with DB", .serialized)
 struct BookServerTests {
+    private let baseURL = "api/books/"
+    
     private func withApp(_ test: (Application) async throws -> ()) async throws {
         let app = try await Application.make(.testing)
         
@@ -25,7 +27,7 @@ struct BookServerTests {
     @Test("Test books route")
     func booksRoute() async throws {
         try await withApp { app in
-            try await app.testing().test(.GET, "api/books", afterResponse: { res async in
+            try await app.testing().test(.GET, baseURL, afterResponse: { res async in
                 #expect(res.status == .ok)
             })
         }
@@ -41,7 +43,7 @@ struct BookServerTests {
             
             try await sampleTodos.create(on: app.db)
             
-            try await app.testing().test(.GET, "api/books", afterResponse: { res async throws in
+            try await app.testing().test(.GET, baseURL, afterResponse: { res async throws in
                 #expect(res.status == .ok)
                 #expect(try res.content.decode([BookDTO].self) == sampleTodos.map { $0.toDTO()} )
             })
@@ -53,7 +55,7 @@ struct BookServerTests {
         let newDTO = BookDTOBuilder().title("Test Title").build()
         
         try await withApp { app in
-            try await app.testing().test(.POST, "api/books", beforeRequest: { req in
+            try await app.testing().test(.POST, baseURL, beforeRequest: { req in
                 try req.content.encode(newDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -73,7 +75,7 @@ struct BookServerTests {
         try await withApp { app in
             try await sampleTodos.create(on: app.db)
             
-            try await app.testing().test(.DELETE, "api/books/\(sampleTodos[0].requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.DELETE, "\(baseURL)\(sampleTodos[0].requireID())", afterResponse: { res async throws in
                 #expect(res.status == .noContent)
                 let model = try await Book.find(sampleTodos[0].id, on: app.db)
                 #expect(model == nil)
