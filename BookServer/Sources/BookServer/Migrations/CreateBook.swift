@@ -16,8 +16,6 @@ struct CreateBook: AsyncMigration {
             .field("author", .string, .required)
             .field("isbn", .string, .required)
             .field("publication_year", .int, .required)
-            .field("created_at", .datetime)
-            .field("updated_at", .datetime)
             .unique(on: "isbn")
             .create()
     }

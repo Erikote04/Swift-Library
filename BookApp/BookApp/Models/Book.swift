@@ -13,8 +13,6 @@ struct Book: Identifiable, Codable {
     let author: String?
     let isbn: String?
     let publicationYear: Int?
-    let createdAt: Date?
-    let updatedAt: Date?
 }
 
 struct BookRequest: Codable {

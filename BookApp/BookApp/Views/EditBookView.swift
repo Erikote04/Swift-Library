@@ -126,9 +126,7 @@ struct EditBookView: View {
             title: "Ejemplo",
             author: "Autor",
             isbn: "123456789",
-            publicationYear: 2023,
-            createdAt: Date(),
-            updatedAt: Date()
+            publicationYear: 2023
         ),
         viewModel: BookViewModel()
     )

@@ -14,8 +14,6 @@ struct BookDTO: Content {
     let author: String?
     let isbn: String?
     let publicationYear: Int?
-    let createdAt: Date?
-    let updatedAt: Date?
     
     func toModel() -> Book {
         let model = Book()
@@ -36,14 +34,6 @@ struct BookDTO: Content {
         
         if let publicationYear = self.publicationYear {
             model.publicationYear = publicationYear
-        }
-        
-        if let createdAt = self.createdAt {
-            model.createdAt = createdAt
-        }
-        
-        if let updatedAt = self.updatedAt {
-            model.updatedAt = updatedAt
         }
         
         return model

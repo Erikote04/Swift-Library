@@ -26,12 +26,6 @@ final class Book: Model, @unchecked Sendable {
     @Field(key: "publication_year")
     var publicationYear: Int
     
-    @Timestamp(key: "created_at", on: .create)
-    var createdAt: Date?
-    
-    @Timestamp(key: "updated_at", on: .update)
-    var updatedAt: Date?
-    
     init() { }
     
     init(id: UUID? = nil, title: String, author: String, isbn: String, publicationYear: Int) {
@@ -48,9 +42,7 @@ final class Book: Model, @unchecked Sendable {
             title: self.title,
             author: self.author,
             isbn: self.isbn,
-            publicationYear: self.publicationYear,
-            createdAt: self.createdAt,
-            updatedAt: self.updatedAt
+            publicationYear: self.publicationYear
         )
     }
 }
