@@ -59,7 +59,7 @@ class BookAPIService: ObservableObject {
     
     // MARK: POST
     
-    func createBook(_ bookRequest: Book) async throws -> Book {
+    func createBook(_ bookRequest: BookRequest) async throws -> Book {
         guard let url = URL(string: baseURL) else {
             throw URLError(.badURL)
         }
@@ -82,7 +82,7 @@ class BookAPIService: ObservableObject {
     
     // MARK: PUT
     
-    func updateBook(id: UUID, with updateRequest: Book) async throws -> Book {
+    func updateBook(id: UUID, with updateRequest: BookRequest) async throws -> Book {
         guard let url = URL(string: "\(baseURL)/\(id.uuidString)") else {
             throw URLError(.badURL)
         }
