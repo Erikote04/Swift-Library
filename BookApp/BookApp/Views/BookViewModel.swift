@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-class BookViewModel: ObservableObject {
+@MainActor
+final class BookViewModel: ObservableObject {
     @Published var books: [Book] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
