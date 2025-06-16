@@ -9,7 +9,7 @@ import Fluent
 
 struct CreateBook: AsyncMigration {
     
-    func prepare(on database: Database) async throws {
+    func prepare(on database: any Database) async throws {
         try await database.schema("books")
             .id()
             .field("title", .string, .required)
@@ -22,7 +22,7 @@ struct CreateBook: AsyncMigration {
             .create()
     }
     
-    func revert(on database: Database) async throws {
+    func revert(on database: any Database) async throws {
         try await database.schema("books").delete()
     }
 }
