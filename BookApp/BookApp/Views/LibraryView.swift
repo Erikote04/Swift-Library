@@ -52,7 +52,7 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showingAddSheet) {
-                // TODO: AddBookView
+                AddBookView(viewModel: viewModel)
             }
             .sheet(item: $selectedBook) { book in
                 // TODO: EditBookView
