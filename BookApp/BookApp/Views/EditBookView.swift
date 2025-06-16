@@ -21,17 +21,17 @@ struct EditBookView: View {
     init(book: Book, viewModel: BookViewModel) {
         self.book = book
         self.viewModel = viewModel
-        self._title = State(initialValue: book.title)
-        self._author = State(initialValue: book.author)
-        self._isbn = State(initialValue: book.isbn)
-        self._yearString = State(initialValue: String(book.publicationYear))
+        self._title = State(initialValue: book.title ?? "")
+        self._author = State(initialValue: book.author ?? "")
+        self._isbn = State(initialValue: book.isbn ?? "")
+        self._yearString = State(initialValue: String(book.publicationYear ?? 0))
     }
     
     private var hasChanges: Bool {
         title != book.title ||
         author != book.author ||
         isbn != book.isbn ||
-        yearString != String(book.publicationYear)
+        yearString != String(book.publicationYear ?? 0)
     }
     
     private var isValidForm: Bool {
@@ -72,9 +72,10 @@ struct EditBookView: View {
                 }
                 
                 ToolbarItem(placement: .destructiveAction) {
-                    Button("Delete", role: .destructive) {
+                    Button("Delete") {
                         deleteBook()
                     }
+                    .tint(.red)
                     .disabled(viewModel.isLoading)
                 }
             }
@@ -83,6 +84,7 @@ struct EditBookView: View {
     }
     
     private func updateBook() {
+        guard let id = book.id else { return }
         guard let year = Int(yearString) else { return }
         
         Task {
@@ -91,7 +93,7 @@ struct EditBookView: View {
             let updatedISBN = isbn.trimmingCharacters(in: .whitespacesAndNewlines)
             
             await viewModel.updateBook(
-                id: book.id,
+                id: id,
                 title: updatedTitle != book.title ? updatedTitle : nil,
                 author: updatedAuthor != book.author ? updatedAuthor : nil,
                 isbn: updatedISBN != book.isbn ? updatedISBN : nil,
@@ -105,8 +107,10 @@ struct EditBookView: View {
     }
     
     private func deleteBook() {
+        guard let id = book.id else { return }
+        
         Task {
-            await viewModel.deleteBook(id: book.id)
+            await viewModel.deleteBook(id: id)
             
             if viewModel.errorMessage == nil {
                 dismiss()

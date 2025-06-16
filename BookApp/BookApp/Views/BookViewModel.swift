@@ -57,10 +57,10 @@ final class BookViewModel: ObservableObject {
         errorMessage = nil
         
         let request = BookRequest(
-            title: title ?? "",
-            author: author ?? "",
-            isbn: isbn ?? "",
-            publicationYear: year ?? 0
+            title: title,
+            author: author,
+            isbn: isbn,
+            publicationYear: year
         )
         
         do {

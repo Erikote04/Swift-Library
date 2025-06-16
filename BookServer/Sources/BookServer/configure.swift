@@ -10,6 +10,21 @@ public func configure(_ app: Application) async throws {
 
     app.databases.use(.sqlite(.file("db.sqlite")), as: .sqlite)
 
+    let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
+    let dateFormatter = DateFormatter()
+    
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+    dateFormatter.calendar = Calendar(identifier: .iso8601)
+    dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    
+    encoder.dateEncodingStrategy = .formatted(dateFormatter)
+    decoder.dateDecodingStrategy = .formatted(dateFormatter)
+    
+    ContentConfiguration.global.use(encoder: encoder, for: .json)
+    ContentConfiguration.global.use(decoder: decoder, for: .json)
+
     app.migrations.add(CreateBook())
     
     try await app.autoMigrate()

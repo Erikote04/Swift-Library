@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  LibraryView.swift
 //  BookApp
 //
 //  Created by Erik Sebastian de Erice Jerez on 16/6/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct LibraryView: View {
     @StateObject private var viewModel = BookViewModel()
     @State private var showingAddSheet = false
     @State private var selectedBook: Book?
@@ -23,7 +23,8 @@ struct ContentView: View {
                         .swipeActions(edge: .trailing) {
                             Button("Delete", role: .destructive) {
                                 Task {
-                                    await viewModel.deleteBook(id: book.id)
+                                    guard let id = book.id else { return }
+                                    await viewModel.deleteBook(id: id)
                                 }
                             }
                         }
@@ -55,7 +56,7 @@ struct ContentView: View {
                 AddBookView(viewModel: viewModel)
             }
             .sheet(item: $selectedBook) { book in
-                // TODO: EditBookView
+                EditBookView(book: book, viewModel: viewModel)
             }
             .alert("Error", isPresented: $viewModel.showingError) {
                 Button("OK") {
@@ -77,25 +78,13 @@ struct BookRowView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(book.title)
+            Text(book.title ?? "")
                 .font(.headline)
                 .lineLimit(2)
             
-            Text("por \(book.author)")
+            Text(book.author ?? "")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-            
-            HStack {
-                Text("ISBN: \(book.isbn)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                Spacer()
-                
-                Text("\(book.publicationYear)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())
@@ -106,5 +95,5 @@ struct BookRowView: View {
 }
 
 #Preview {
-    ContentView()
+    LibraryView()
 }
