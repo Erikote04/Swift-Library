@@ -41,4 +41,16 @@ final class Book: Model, @unchecked Sendable {
         self.isbn = isbn
         self.publicationYear = publicationYear
     }
+    
+    func toDTO() -> BookDTO {
+        .init(
+            id: self.id,
+            title: self.title,
+            author: self.author,
+            isbn: self.isbn,
+            publicationYear: self.publicationYear,
+            createdAt: self.createdAt,
+            updatedAt: self.updatedAt
+        )
+    }
 }
