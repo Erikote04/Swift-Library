@@ -99,17 +99,17 @@ struct BookServerTests {
     
     @Test("Deleting a Book")
     func deleteBook() async throws {
-        let sampleTodos = [
+        let sampleBooks = [
             BookBuilder().isbn("1111111111111").build(),
             BookBuilder().isbn("2222222222222").build()
         ]
         
         try await withApp { app in
-            try await sampleTodos.create(on: app.db)
+            try await sampleBooks.create(on: app.db)
             
-            try await app.testing().test(.DELETE, "\(baseURL)\(sampleTodos[0].requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.DELETE, "\(baseURL)\(sampleBooks[0].requireID())", afterResponse: { res async throws in
                 #expect(res.status == .noContent)
-                let model = try await Book.find(sampleTodos[0].id, on: app.db)
+                let model = try await Book.find(sampleBooks[0].id, on: app.db)
                 #expect(model == nil)
             })
         }
