@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  BookServer
-//
-//  Created by Erik Sebastian de Erice Jerez on 16/6/25.
-//
-
 import Fluent
 
 struct CreateBook: AsyncMigration {
