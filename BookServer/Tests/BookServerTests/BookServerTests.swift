@@ -36,22 +36,36 @@ struct BookServerTests {
     @Test("Getting all the Books")
     func getAllBooks() async throws {
         try await withApp { app in
-            let sampleTodos = [
+            let sampleBooks = [
                 BookBuilder().isbn("1111111111111").build(),
                 BookBuilder().isbn("2222222222222").build()
             ]
             
-            try await sampleTodos.create(on: app.db)
+            try await sampleBooks.create(on: app.db)
             
             try await app.testing().test(.GET, baseURL, afterResponse: { res async throws in
                 #expect(res.status == .ok)
-                #expect(try res.content.decode([BookDTO].self) == sampleTodos.map { $0.toDTO()} )
+                #expect(try res.content.decode([BookDTO].self) == sampleBooks.map { $0.toDTO()} )
+            })
+        }
+    }
+    
+    @Test("Getting a Book by ID")
+    func getBook() async throws {
+        try await withApp { app in
+            let sampleBook = BookBuilder().build()
+            
+            try await sampleBook.create(on: app.db)
+            
+            try await app.testing().test(.GET, "\(baseURL)/\(sampleBook.id!)", afterResponse: { res async throws in
+                #expect(res.status == .ok)
+                #expect(try res.content.decode(BookDTO.self) == sampleBook.toDTO())
             })
         }
     }
     
     @Test("Creating a Book")
-    func createTodo() async throws {
+    func createBook() async throws {
         let newDTO = BookDTOBuilder().title("Test Title").build()
         
         try await withApp { app in
@@ -65,8 +79,26 @@ struct BookServerTests {
         }
     }
     
+    @Test("Updating a Book")
+    func updateBook() async throws {
+        try await withApp { app in
+            let sampleBook = BookBuilder().title("Original Title").build()
+            let updatedDTO = BookDTOBuilder().title("Updated Title").build()
+            
+            try await sampleBook.create(on: app.db)
+            
+            try await app.testing().test(.PUT, "\(baseURL)\(sampleBook.requireID())", beforeRequest: { req in
+                try req.content.encode(updatedDTO)
+            }, afterResponse: { res async throws in
+                #expect(res.status == .ok)
+                let updatedBook = try await Book.find(sampleBook.id, on: app.db)
+                #expect(updatedBook?.toDTO().title == updatedDTO.title)
+            })
+        }
+    }
+    
     @Test("Deleting a Book")
-    func deleteTodo() async throws {
+    func deleteBook() async throws {
         let sampleTodos = [
             BookBuilder().isbn("1111111111111").build(),
             BookBuilder().isbn("2222222222222").build()
