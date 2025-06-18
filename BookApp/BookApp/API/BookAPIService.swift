@@ -1,14 +1,25 @@
 import Foundation
 
-class BookAPIService: ObservableObject {
+protocol BookAPIServiceProtocol {
+    func getAllBooks() async throws -> [Book]
+    func getBook(id: UUID) async throws -> Book
+    func createBook(_ book: BookRequest) async throws -> Book
+    func updateBook(id: UUID, with updateRequest: BookRequest) async throws -> Book
+    func deleteBook(id: UUID) async throws
+}
+
+class BookAPIService: BookAPIServiceProtocol, ObservableObject {
     static let shared = BookAPIService()
     
-    private let baseURL = "http://localhost:8080/api/books"
-    private let session = URLSession.shared
+    private let baseURL: String
+    private let session: URLSession
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
     
-    private init() {
+    private init(baseUrl: String = "http://localhost:8080/api/books", session: URLSession = .shared) {
+        self.baseURL = baseUrl
+        self.session = session
+        
         decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Full)
         
@@ -52,7 +63,7 @@ class BookAPIService: ObservableObject {
     
     // MARK: POST
     
-    func createBook(_ bookRequest: BookRequest) async throws -> Book {
+    func createBook(_ book: BookRequest) async throws -> Book {
         guard let url = URL(string: baseURL) else {
             throw URLError(.badURL)
         }
@@ -60,7 +71,7 @@ class BookAPIService: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try encoder.encode(bookRequest)
+        request.httpBody = try encoder.encode(book)
         
         let (data, response) = try await session.data(for: request)
         

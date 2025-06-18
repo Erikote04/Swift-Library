@@ -7,7 +7,11 @@ final class BookViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var showingError = false
     
-    private let apiService = BookAPIService.shared
+    private let apiService: BookAPIServiceProtocol
+    
+    init(apiService: BookAPIServiceProtocol = BookAPIService.shared) {
+        self.apiService = apiService
+    }
     
     func loadBooks() async {
         isLoading = true
