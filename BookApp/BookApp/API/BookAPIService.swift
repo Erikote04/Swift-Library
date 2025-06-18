@@ -16,7 +16,7 @@ class BookAPIService: BookAPIServiceProtocol, ObservableObject {
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
     
-    private init(baseUrl: String = "http://localhost:8080/api/books", session: URLSession = .shared) {
+    init(baseUrl: String = "http://localhost:8080/api/books", session: URLSession = .shared) {
         self.baseURL = baseUrl
         self.session = session
         
