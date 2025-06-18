@@ -1,10 +1,3 @@
-//
-//  BookAppTests.swift
-//  BookAppTests
-//
-//  Created by Erik Sebastian de Erice Jerez on 18/6/25.
-//
-
 import Testing
 
 struct BookAppTests {
